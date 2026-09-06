@@ -17,8 +17,7 @@ export const metadata: Metadata = {
     siteName: "Retiro CIA Primavera",
     images: [
       {
-        // Usa o caminho completo para o WhatsApp conseguir baixar a foto
-        url: "https://retirovoltemos.vercel.app/og-image.png",
+        url: "/og-image.png", // Next.js junta com metadataBase automaticamente
         width: 1200,
         height: 630,
         alt: "Retiro VOLTEMOS 2027",
