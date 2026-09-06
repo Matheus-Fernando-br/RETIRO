@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowLeft, Church, CreditCard, MessageCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Church,
+  CreditCard,
+  LoaderCircle,
+  MessageCircle,
+} from "lucide-react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import RegistrationProgress from "@/app/components/RegistrationProgress";
@@ -8,20 +15,88 @@ import RegistrationProgress from "@/app/components/RegistrationProgress";
 export default function RegistrationStepThree() {
   const router = useRouter();
 
-  function handlePix() {
-    // TODO: substituir pelo número/link real do WhatsApp
-    window.open(
-      "https://wa.me/553173139892?text=Ol%C3%A1%20Gilson%2C%20fiz%20minha%20inscri%C3%A7%C3%A3o%20no%20site%20e%20gostaria%20de%20pagar%20pelo%20pix%20o%20retiro%21",
-      "_blank",
-    );
-  }
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleCard() {
-    // TODO: substituir pelo link real da plataforma de pagamento
-    window.open(
-      "https://link.infinitepay.io/renan_patrick_andrade/VC1D-8jgKErCsFT-200,00",
-      "_blank",
-    );
+  async function finishRegistration(paymentMethod: "pix" | "cartao") {
+    setLoading(true);
+    setError("");
+
+    try {
+      const storedRegistration = sessionStorage.getItem("retiro-inscricao");
+
+      if (!storedRegistration) {
+        throw new Error("Dados da inscrição não encontrados.");
+      }
+
+      const registration = JSON.parse(storedRegistration);
+
+      const payload = {
+        nome: registration.nome,
+        email: registration.email,
+        telefone: registration.telefone,
+        cpf: registration.cpf,
+
+        restricao_medicamentos: registration.restricaoMedicamentos,
+
+        membresia: registration.membresia,
+        igreja: registration.igreja || null,
+        camisa: registration.camisa,
+        voluntariado: registration.voluntariado,
+
+        pagamento: paymentMethod,
+      };
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const response = await fetch(`${apiUrl}/api/inscricoes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+
+        throw new Error(
+          data.detail || "Não foi possível realizar sua inscrição.",
+        );
+      }
+
+      const savedRegistration = await response.json();
+
+      sessionStorage.setItem("retiro-inscricao-id", savedRegistration.id);
+
+      sessionStorage.setItem("retiro-pagamento", paymentMethod);
+
+      if (paymentMethod === "pix") {
+        window.open(
+          "https://wa.me/553173139892?text=Ol%C3%A1%20Gilson%2C%20fiz%20minha%20inscri%C3%A7%C3%A3o%20no%20site%20e%20gostaria%20de%20pagar%20pelo%20pix%20o%20retiro%21",
+          "_blank",
+        );
+      }
+
+      if (paymentMethod === "cartao") {
+        window.open(
+          "https://link.infinitepay.io/renan_patrick_andrade/VC1D-8jgKErCsFT-200,00",
+          "_blank",
+        );
+      }
+
+      router.push("/inscricao/sucesso");
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro ao realizar sua inscrição.",
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -33,6 +108,7 @@ export default function RegistrationStepThree() {
             type="button"
             onClick={() => router.back()}
             className="registration-back"
+            disabled={loading}
           >
             <ArrowLeft size={17} />
             Voltar
@@ -70,12 +146,17 @@ export default function RegistrationStepThree() {
             {/* PIX */}
             <button
               type="button"
-              onClick={handlePix}
-              className="payment-option"
+              onClick={() => finishRegistration("pix")}
+              disabled={loading}
+              className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="payment-option-content">
                 <div className="payment-option-icon">
-                  <MessageCircle size={22} />
+                  {loading ? (
+                    <LoaderCircle size={22} className="animate-spin" />
+                  ) : (
+                    <MessageCircle size={22} />
+                  )}
                 </div>
 
                 <div>
@@ -94,12 +175,17 @@ export default function RegistrationStepThree() {
             {/* Cartão */}
             <button
               type="button"
-              onClick={handleCard}
-              className="payment-option"
+              onClick={() => finishRegistration("cartao")}
+              disabled={loading}
+              className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="payment-option-content">
                 <div className="payment-option-icon">
-                  <CreditCard size={22} />
+                  {loading ? (
+                    <LoaderCircle size={22} className="animate-spin" />
+                  ) : (
+                    <CreditCard size={22} />
+                  )}
                 </div>
 
                 <div>
@@ -114,11 +200,17 @@ export default function RegistrationStepThree() {
               <span className="text-xl text-gray-400">→</span>
             </button>
           </div>
+
+          {/* Erro */}
+          {error && (
+            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">
+              {error}
+            </div>
+          )}
         </div>
 
         <p className="form-footer-text">
-          Após realizar o pagamento, sua inscrição será encaminhada para a
-          organização do retiro.
+          Seus dados serão enviados com segurança para concluir sua inscrição.
         </p>
       </div>
     </main>

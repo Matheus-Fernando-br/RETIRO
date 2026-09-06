@@ -16,12 +16,39 @@ export default function RegistrationStepOne() {
     cpf: "",
   });
 
+  function formatCPF(value: string) {
+    return value
+      .replace(/\D/g, "")
+      .slice(0, 11)
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  function formatPhone(value: string) {
+    return value
+      .replace(/\D/g, "")
+      .slice(0, 11)
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
 
+    let formattedValue = value;
+
+    if (name === "cpf") {
+      formattedValue = formatCPF(value);
+    }
+
+    if (name === "telefone") {
+      formattedValue = formatPhone(value);
+    }
+
     setForm((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: formattedValue,
     }));
   }
 
@@ -110,6 +137,7 @@ export default function RegistrationStepOne() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="seuemail@email.com"
+                autoComplete="email"
                 className="form-input"
               />
             </div>
@@ -130,6 +158,7 @@ export default function RegistrationStepOne() {
                 value={form.telefone}
                 onChange={handleChange}
                 placeholder="(31) 99999-9999"
+                maxLength={15}
                 className="form-input"
               />
             </div>
@@ -150,6 +179,7 @@ export default function RegistrationStepOne() {
                 value={form.cpf}
                 onChange={handleChange}
                 placeholder="000.000.000-00"
+                maxLength={14}
                 className="form-input"
               />
             </div>

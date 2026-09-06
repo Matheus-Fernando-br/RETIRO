@@ -7,6 +7,7 @@ import {
   Info,
   MessageCircleQuestion,
   X,
+  ShieldCheck,
 } from "lucide-react";
 
 const menuItems = [
@@ -15,6 +16,11 @@ const menuItems = [
   { label: "Informações", href: "#informacoes", icon: Church },
   { label: "Programação", href: "#programacao", icon: CalendarDays },
   { label: "Dúvidas", href: "#faq", icon: MessageCircleQuestion },
+  {
+    label: "Admin",
+    href: "/admin/login",
+    icon: ShieldCheck,
+  },
 ];
 
 interface SidebarProps {

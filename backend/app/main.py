@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.routes.admin import router as admin_router
 from app.routes.inscricoes import router as inscricoes_router
 
 
@@ -36,7 +36,7 @@ app.add_middleware(
 
 
 app.include_router(inscricoes_router)
-
+app.include_router(admin_router)
 
 @app.get("/api/health")
 async def health_check():
