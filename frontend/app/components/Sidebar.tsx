@@ -8,6 +8,7 @@ import {
   MessageCircleQuestion,
   X,
   ShieldCheck,
+  UserPlus,
 } from "lucide-react";
 
 const menuItems = [
@@ -66,7 +67,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                   Retiro
                 </p>
-                <p className="text-sm font-bold text-gray-950">2026</p>
+                <p className="text-sm font-bold text-gray-950">2027</p>
               </div>
             </a>
 
@@ -105,6 +106,20 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 </a>
               );
             })}
+            {/* Botão Inscrever */}
+            <a
+              href="/inscricao/etapa-1"
+              onClick={onClose}
+              className="
+                mt-2 flex w-full items-center gap-4 rounded-2xl
+                bg-black px-4 py-3.5 font-bold text-white shadow-sm
+                transition hover:bg-gray-800
+                lg:w-16 lg:flex-col lg:gap-1.5 lg:px-2 lg:py-3
+              "
+            >
+              <UserPlus size={20} />
+              <span className="text-sm lg:text-[10px]">Inscrever</span>
+            </a>
           </nav>
         </div>
       </aside>

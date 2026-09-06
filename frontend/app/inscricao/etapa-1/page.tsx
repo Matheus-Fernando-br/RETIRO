@@ -3,7 +3,7 @@
 import { ArrowLeft, ArrowRight, Church } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 import RegistrationProgress from "@/app/components/RegistrationProgress";
 
 export default function RegistrationStepOne() {
@@ -74,9 +74,13 @@ export default function RegistrationStepOne() {
             Voltar
           </button>
 
-          <div className="registration-logo">
-            <Church size={19} />
-          </div>
+          <Image
+            src="/CIA.PNG"
+            alt="Logo do Retiro"
+            width={80}
+            height={50}
+            style={{ borderRadius: 5 }}
+          />
         </div>
 
         {/* Título */}

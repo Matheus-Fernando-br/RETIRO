@@ -1,68 +1,75 @@
-const schedule = [
-  {
-    time: "18:00",
-    title: "Chegada e acolhimento",
-    description: "Recepção dos participantes e acomodação.",
-  },
-  {
-    time: "19:30",
-    title: "Abertura",
-    description: "Um momento especial para iniciarmos juntos.",
-  },
-  {
-    time: "21:00",
-    title: "Louvor e palavra",
-    description: "Tempo de adoração, reflexão e mensagem.",
-  },
-  {
-    time: "23:00",
-    title: "Comunhão",
-    description: "Momento de convivência e integração.",
-  },
+"use client";
+
+import Image from "next/image";
+
+// Substitua/adicione os nomes dos arquivos que você salvou na pasta public/fotos/
+const photos = [
+  "/fotos/1.PNG",
+  "/fotos/2.PNG",
+  "/fotos/3.jpeg",
+  "/fotos/4.jpeg",
+  "/fotos/5.jpeg",
+  "/fotos/6.jpeg",
+  "/fotos/7.jpeg",
+  "/fotos/8.jpeg",
+  "/fotos/9.jpeg",
+  "/fotos/10.jpeg",
+  "/fotos/11.jpeg",
+  "/fotos/12.jpeg",
+  "/fotos/13.jpeg",
 ];
 
-export default function Schedule() {
+export default function AboutUs() {
   return (
-    <section id="programacao" className="bg-white px-6 py-28 lg:px-12">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr]">
+    <section id="sobre" className="overflow-hidden bg-white py-28">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          {/* Texto Quem Somos */}
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400">
-              Programação
+              Quem Somos
             </p>
 
             <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl">
-              Cada momento
+              Nossa Comunidade &
               <br />
-              <span className="text-gray-400">tem um propósito.</span>
+              <span className="text-gray-400">Propósito.</span>
             </h2>
 
-            <p className="mt-6 max-w-md leading-7 text-gray-500">
-              Uma programação preparada para proporcionar momentos de
-              aprendizado, comunhão e crescimento.
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              A{" "}
+              <strong className="text-gray-950">
+                Igreja Centro Internacional de Avivamento Primavera
+              </strong>{" "}
+              é uma comunidade que deseja viver a presença de Deus, crescer em
+              intimidade com Ele e cooperar com aquilo que o Senhor está fazendo
+              em nossa geração.
             </p>
           </div>
+        </div>
+      </div>
 
-          <div className="divide-y divide-black/10">
-            {schedule.map((item) => (
-              <div
-                key={item.time}
-                className="grid gap-4 py-7 sm:grid-cols-[100px_1fr]"
-              >
-                <span className="text-sm font-bold text-gray-400">
-                  {item.time}
-                </span>
+      {/* Carrossel Infinito Suave */}
+      <div className="relative mt-20 w-full overflow-hidden">
+        {/* Degradê de sombreamento nas pontas do carrossel */}
+        <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 bg-gradient-to-l from-white to-transparent" />
 
-                <div>
-                  <h3 className="text-xl font-bold text-gray-950">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-2 text-gray-500">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex w-max animate-infinite-scroll gap-6 hover:[animation-play-state:paused]">
+          {/* Triplicamos a lista de fotos para garantir o loop infinito sem falhas visuais */}
+          {[...photos, ...photos, ...photos].map((src, index) => (
+            <div
+              key={index}
+              className="relative h-64 w-80 shrink-0 overflow-hidden rounded-3xl border border-black/5 shadow-sm sm:h-72 sm:w-96"
+            >
+              <Image
+                src={src}
+                alt={`Foto da comunidade ${index + 1}`}
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>

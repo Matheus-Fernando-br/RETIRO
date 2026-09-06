@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Church, Home } from "lucide-react";
+import { Check, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function RegistrationSuccess() {
@@ -28,10 +28,6 @@ export default function RegistrationSuccess() {
             {/* Informação */}
             <div className="mt-8 rounded-[2rem] border border-black/5 bg-white p-6 text-left shadow-sm sm:p-8">
               <div className="flex items-start gap-4">
-                <div className="registration-logo shrink-0">
-                  <Church size={19} />
-                </div>
-
                 <div>
                   <h2 className="font-black text-gray-950">Próximo passo</h2>
 

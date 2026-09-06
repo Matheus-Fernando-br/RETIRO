@@ -1,3 +1,7 @@
+"use client";
+
+import { ChevronDown } from "lucide-react";
+
 const questions = [
   {
     question: "Quem pode participar?",
@@ -39,13 +43,16 @@ export default function FAQ() {
           {questions.map((item) => (
             <details
               key={item.question}
-              className="group rounded-2xl border border-black/5 bg-white p-6"
+              className="group rounded-3xl border border-black/5 bg-white p-6 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 [&[open]]:bg-white"
             >
-              <summary className="cursor-pointer list-none text-lg font-bold text-gray-950">
-                {item.question}
+              <summary className="flex cursor-pointer items-center justify-between gap-4 list-none text-lg font-bold text-gray-950 select-none">
+                <span>{item.question}</span>
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gray-100 text-gray-700 transition-transform duration-300 group-open:rotate-180 group-open:bg-black group-open:text-white">
+                  <ChevronDown size={20} />
+                </div>
               </summary>
 
-              <p className="mt-4 max-w-2xl leading-7 text-gray-500">
+              <p className="mt-4 max-w-2xl leading-relaxed text-gray-500 transition-all">
                 {item.answer}
               </p>
             </details>

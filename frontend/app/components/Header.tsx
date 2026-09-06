@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import Image from "next/image";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -9,18 +10,29 @@ interface HeaderProps {
 export default function Header({ onMenuClick }: HeaderProps) {
   return (
     <header className="fixed top-0 right-0 left-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur-xl lg:left-20">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-10">
-        {/* Identificação */}
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 sm:text-xs sm:tracking-[0.25em]">
-            Retiro 2026
-          </p>
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-2 sm:px-6 lg:px-10">
+        {/* 1. Esquerda - Logo */}
+        <div className="flex items-center">
+          <Image
+            src="/CIA.PNG"
+            alt="Logo"
+            width={80}
+            height={60}
+            style={{ borderRadius: 5 }}
+          />
+        </div>
 
+        {/* 2. Centro - Título do Retiro */}
+        <div className="text-center">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 sm:text-xs sm:tracking-[0.25em]">
+            Retiro 2027
+          </p>
           <p className="text-sm font-semibold text-gray-900 sm:text-base">
-            Um tempo para Deus
+            VOLTEMOS
           </p>
         </div>
 
+        {/* 3. Direita - Ações/Menu */}
         <div className="flex items-center gap-3">
           {/* Desktop */}
           <a

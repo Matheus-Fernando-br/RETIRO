@@ -6,10 +6,11 @@ import {
   CreditCard,
   LoaderCircle,
   MessageCircle,
+  Tag,
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 import RegistrationProgress from "@/app/components/RegistrationProgress";
 
 export default function RegistrationStepThree() {
@@ -114,9 +115,13 @@ export default function RegistrationStepThree() {
             Voltar
           </button>
 
-          <div className="registration-logo">
-            <Church size={19} />
-          </div>
+          <Image
+            src="/CIA.PNG"
+            alt="Logo do Retiro"
+            width={80}
+            height={50}
+            style={{ borderRadius: 5 }}
+          />
         </div>
 
         {/* Título */}
@@ -140,6 +145,27 @@ export default function RegistrationStepThree() {
             <p className="form-section-label">Pagamento</p>
 
             <h2 className="form-section-title">Como você deseja pagar?</h2>
+          </div>
+
+          {/* Card do Lote / Valor */}
+          <div className="mb-6 flex items-center justify-between rounded-2xl border border-black/5 bg-[#f5f4ef] p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
+                <Tag size={18} />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                  Primeiro Lote
+                </p>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <span className="text-xl font-black text-gray-950">
+                R$ 205,00
+              </span>
+            </div>
           </div>
 
           <div className="payment-options">

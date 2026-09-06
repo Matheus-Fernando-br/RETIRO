@@ -16,15 +16,20 @@ export default function About() {
 
         <div>
           <p className="text-lg leading-8 text-gray-600">
-            O retiro foi preparado para proporcionar um ambiente de comunhão,
-            reflexão e crescimento espiritual. Será um momento para deixar a
-            rotina de lado e dedicar tempo àquilo que realmente importa.
+            Neste ano, como família de Deus e como comunidade, temos sido
+            conduzidos pelo Senhor a olhar novamente para os fundamentos da
+            nossa caminhada: voltar ao princípio, voltar o coração para Deus,
+            parar para ouvir a Sua voz e considerar os caminhos que temos
+            percorrido.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Durante esses dias, teremos momentos de louvor, mensagens, oração,
-            dinâmicas, comunhão e experiências que poderão marcar a nossa
-            caminhada.
+            Como em Oséias 6:1, quando somos convidados: “Venham, voltemos para
+            o Senhor”. Como em Oséias 2, quando o próprio Deus conduz o Seu povo
+            novamente ao deserto para falar ao seu coração e restaurar a
+            aliança. E como em Lamentações 3:40-50, quando somos chamados a
+            examinar os nossos caminhos, voltar ao Senhor e levantar novamente
+            os nossos corações diante dEle.
           </p>
         </div>
       </div>
