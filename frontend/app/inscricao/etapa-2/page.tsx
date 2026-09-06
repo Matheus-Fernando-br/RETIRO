@@ -152,7 +152,7 @@ export default function RegistrationStepTwo() {
             {/* 7 */}
             <div>
               <label htmlFor="igreja" className="form-label">
-                7. Qual é a sua igreja?
+                7. Caso a resposta acima for Não, qual é a sua igreja?
                 <span className="form-optional">Opcional</span>
               </label>
 
