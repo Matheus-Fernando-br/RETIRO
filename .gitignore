@@ -1,0 +1,31 @@
+# =========================================================
+# BACKEND - PYTHON
+# =========================================================
+
+backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/.env
+
+
+# =========================================================
+# FRONTEND - NEXT.JS
+# =========================================================
+
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+
+# =========================================================
+# SISTEMA / EDITOR
+# =========================================================
+
+.DS_Store
+*.log
+
+.vscode/
+.idea/
