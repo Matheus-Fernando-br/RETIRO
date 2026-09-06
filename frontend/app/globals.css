@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* =========================================================
+   BASE DO SITE
+   ========================================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #111111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #111111;
+  color: #ffffff;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* =========================================================
+   PÁGINAS DE INSCRIÇÃO
+   ========================================================= */
+
+.page-background {
+  @apply min-h-screen bg-[#f5f4ef] px-4 py-6 sm:px-6 sm:py-10;
+}
+
+.page-container {
+  @apply mx-auto w-full max-w-2xl;
+}
+
+/* =========================================================
+   CABEÇALHO DA INSCRIÇÃO
+   ========================================================= */
+
+.registration-header {
+  @apply mb-8 flex items-center justify-between;
+}
+
+.registration-back {
+  @apply flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-gray-950;
+}
+
+.registration-logo {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white;
+}
+
+.registration-eyebrow {
+  @apply text-xs font-bold uppercase tracking-[0.3em] text-gray-400;
+}
+
+.registration-title {
+  @apply mt-3 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl;
+}
+
+.registration-description {
+  @apply mt-4 max-w-xl leading-7 text-gray-500;
+}
+
+/* =========================================================
+   CARD DO FORMULÁRIO
+   ========================================================= */
+
+.form-card {
+  @apply rounded-[2rem] border border-black/5 bg-white p-5 shadow-sm sm:p-8;
+}
+
+.form-header {
+  @apply mb-8;
+}
+
+.form-section-label {
+  @apply text-xs font-bold uppercase tracking-[0.25em] text-gray-400;
+}
+
+.form-section-title {
+  @apply mt-2 text-2xl font-black text-gray-950;
+}
+
+.form-fields {
+  @apply space-y-6;
+}
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.form-label {
+  @apply mb-2 block text-sm font-bold leading-6 text-gray-900;
+}
+
+.form-required {
+  @apply ml-1 text-red-500;
+}
+
+.form-optional {
+  @apply ml-2 text-xs font-medium text-gray-400;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.form-input {
+  @apply w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5
+    text-base text-gray-900 outline-none transition
+    placeholder:text-gray-400
+    focus:border-black focus:bg-white;
+}
+
+.form-textarea {
+  @apply w-full resize-none rounded-2xl border border-gray-200 bg-gray-50
+    px-4 py-3.5 text-base text-gray-900 outline-none transition
+    placeholder:text-gray-400
+    focus:border-black focus:bg-white;
+}
+
+/* =========================================================
+   OPÇÕES — RADIO / ESCOLHAS
+   ========================================================= */
+
+.form-options {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.form-option {
+  @apply flex cursor-pointer items-center gap-3 rounded-2xl border
+    border-gray-200 bg-gray-50 p-4 text-gray-700 transition
+    hover:border-gray-400;
+}
+
+.form-option-selected {
+  @apply border-black bg-black text-white;
+}
+
+.form-option-radio {
+  @apply flex h-5 w-5 items-center justify-center rounded-full border border-gray-400;
+}
+
+.form-option-radio-selected {
+  @apply border-white;
+}
+
+.form-option-radio-dot {
+  @apply h-2.5 w-2.5 rounded-full bg-white;
+}
+
+/* =========================================================
+   TAMANHOS DE CAMISA
+   ========================================================= */
+
+.shirt-options {
+  @apply grid grid-cols-2 gap-3 sm:grid-cols-3;
+}
+
+.shirt-option {
+  @apply flex cursor-pointer items-center justify-center rounded-2xl
+    border border-gray-200 bg-gray-50 p-4 font-bold text-gray-700
+    transition hover:border-gray-400;
+}
+
+.shirt-option-selected {
+  @apply border-black bg-black text-white;
+}
+
+.form-help {
+  @apply mt-3 text-xs leading-5 text-gray-400;
+}
+
+/* =========================================================
+   TERMO
+   ========================================================= */
+
+.terms-card {
+  @apply rounded-2xl border border-black/5 bg-[#f5f4ef] p-5 sm:p-6;
+}
+
+.terms-label {
+  @apply text-xs font-bold uppercase tracking-[0.2em] text-gray-400;
+}
+
+.terms-text {
+  @apply mt-4 text-sm leading-6 text-gray-700;
+}
+
+.terms-checkbox {
+  @apply mt-5 flex cursor-pointer items-start gap-3;
+}
+
+.checkbox-box {
+  @apply mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center
+    rounded-lg border border-gray-300 bg-white transition;
+}
+
+.checkbox-box-selected {
+  @apply border-black bg-black text-white;
+}
+
+.checkbox-text {
+  @apply text-sm font-bold text-gray-900;
+}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+.form-button {
+  @apply mt-10 flex w-full items-center justify-center gap-3 rounded-2xl
+    bg-black px-6 py-4 font-bold text-white transition
+    hover:bg-gray-800;
+}
+
+.form-button-icon {
+  @apply transition-transform;
+}
+
+.form-button:hover .form-button-icon {
+  transform: translateX(4px);
+}
+
+/* =========================================================
+   TEXTO INFORMATIVO
+   ========================================================= */
+
+.form-footer-text {
+  @apply mt-6 text-center text-xs leading-5 text-gray-400;
+}
+
+/* =========================================================
+   PAGAMENTO — ETAPA 3
+   ========================================================= */
+
+.payment-options {
+  @apply space-y-4;
+}
+
+.payment-option {
+  @apply flex w-full cursor-pointer items-center justify-between rounded-2xl
+    border border-gray-200 bg-gray-50 p-5 text-left transition
+    hover:border-gray-400 hover:bg-white;
+}
+
+.payment-option-content {
+  @apply flex items-center gap-4;
+}
+
+.payment-option-icon {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl
+    bg-black text-white;
+}
+
+.payment-option-title {
+  @apply font-bold text-gray-950;
+}
+
+.payment-option-description {
+  @apply mt-1 text-sm text-gray-500;
+}
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
+
+.admin-background {
+  @apply flex min-h-screen items-center justify-center bg-[#f5f4ef] px-5 py-10;
+}
+
+.admin-container {
+  @apply w-full max-w-md;
+}
+
+.admin-card {
+  @apply rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm sm:p-8;
+}
+
+.admin-title {
+  @apply mt-4 text-3xl font-black tracking-tight text-gray-950;
+}
+
+.admin-description {
+  @apply mt-3 text-sm leading-6 text-gray-500;
+}
+
+.admin-fields {
+  @apply mt-8 space-y-5;
+}
+
+.admin-button {
+  @apply mt-6 flex w-full items-center justify-center rounded-2xl
+    bg-black px-6 py-4 font-bold text-white transition
+    hover:bg-gray-800;
+}
