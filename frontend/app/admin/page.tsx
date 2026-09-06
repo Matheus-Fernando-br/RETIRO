@@ -8,7 +8,7 @@ import {
   RefreshCw,
   XCircle,
 } from "lucide-react";
-import { useRouter } from "next/navigation"; // Importação correta
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Inscricao {
@@ -25,17 +25,31 @@ interface Inscricao {
   created_at: string;
 }
 
+type FiltroPagamento = "todos" | "pendente" | "pago" | "cancelado";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function AdminPage() {
   const router = useRouter();
 
   const [authChecking, setAuthChecking] = useState(true);
+  const [filtroPagamento, setFiltroPagamento] =
+    useState<FiltroPagamento>("todos");
 
+  // DECLARAÇÃO DO ESTADO PRIMEIRO
   const [inscricoes, setInscricoes] = useState<Inscricao[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  // O FILTRO É CALCULADO APÓS A DECLARAÇÃO DO ESTADO
+  const inscricoesFiltradas = inscricoes.filter((inscricao) => {
+    if (filtroPagamento === "todos") {
+      return true;
+    }
+
+    return inscricao.pagamento_status === filtroPagamento;
+  });
 
   async function loadInscricoes() {
     try {
@@ -147,7 +161,6 @@ export default function AdminPage() {
 
         {/* Cabeçalho */}
         <div className="mt-8 mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          {" "}
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400">
               Administração
@@ -169,6 +182,56 @@ export default function AdminPage() {
           >
             <RefreshCw size={17} className={loading ? "animate-spin" : ""} />
             Atualizar
+          </button>
+        </div>
+
+        <div className="mb-6 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setFiltroPagamento("todos")}
+            className={`rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+              filtroPagamento === "todos"
+                ? "bg-black text-white"
+                : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+            }`}
+          >
+            Todos
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFiltroPagamento("pendente")}
+            className={`rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+              filtroPagamento === "pendente"
+                ? "bg-black text-white"
+                : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+            }`}
+          >
+            Pendente pagamento
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFiltroPagamento("pago")}
+            className={`rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+              filtroPagamento === "pago"
+                ? "bg-black text-white"
+                : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+            }`}
+          >
+            Pago
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFiltroPagamento("cancelado")}
+            className={`rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+              filtroPagamento === "cancelado"
+                ? "bg-black text-white"
+                : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"
+            }`}
+          >
+            Cancelados
           </button>
         </div>
 
@@ -194,18 +257,18 @@ export default function AdminPage() {
         )}
 
         {/* Sem inscrições */}
-        {!loading && inscricoes.length === 0 && (
+        {!loading && inscricoesFiltradas.length === 0 && (
           <div className="rounded-[2rem] border border-black/5 bg-white p-10 text-center shadow-sm">
             <p className="font-bold text-gray-900">
-              Nenhuma inscrição encontrada.
+              Nenhuma inscrição encontrada para este filtro.
             </p>
           </div>
         )}
 
         {/* Inscrições */}
-        {!loading && inscricoes.length > 0 && (
+        {!loading && inscricoesFiltradas.length > 0 && (
           <div className="space-y-4">
-            {inscricoes.map((inscricao) => {
+            {inscricoesFiltradas.map((inscricao) => {
               const isUpdating = updatingId === inscricao.id;
 
               return (
