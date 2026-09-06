@@ -2,26 +2,23 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  // Título que aparece na aba do navegador
   title: "Retiro VOLTEMOS 2027 | Igreja CIA Primavera",
-
-  // Descrição que aparece no Google e no compartilhamento
   description:
     "Um tempo para parar, ouvir, lembrar e retornar ao Senhor. Garanta sua vaga no Retiro 2027.",
 
-  // URL oficial do seu site
-  metadataBase: new URL("https://seu-dominio.com.br"),
+  // URL base oficial do projeto
+  metadataBase: new URL("https://retirovoltemos.vercel.app"),
 
-  // O que aparece quando compartilha o link (WhatsApp, Facebook, LinkedIn, etc.)
   openGraph: {
     title: "Retiro VOLTEMOS 2027 — Igreja CIA Primavera",
     description:
       "Um tempo para parar, ouvir, lembrar e retornar ao Senhor. Faça sua inscrição online!",
-    url: "https://seu-dominio.com.br",
+    url: "https://retirovoltemos.vercel.app",
     siteName: "Retiro CIA Primavera",
     images: [
       {
-        url: "/og-image.png", // Imagem que vai aparecer no card do WhatsApp
+        // Usa o caminho completo para o WhatsApp conseguir baixar a foto
+        url: "https://retirovoltemos.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Retiro VOLTEMOS 2027",
@@ -30,13 +27,11 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     type: "website",
   },
-
-  // O que aparece quando compartilha no Twitter / X
   twitter: {
     card: "summary_large_image",
     title: "Retiro VOLTEMOS 2027",
     description: "Um tempo para desacelerar e conectar-se com Deus.",
-    images: ["/og-image.png"],
+    images: ["https://retirovoltemos.vercel.app/og-image.png"],
   },
 };
 
