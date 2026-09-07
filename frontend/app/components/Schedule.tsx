@@ -21,7 +21,7 @@ const photos = [
 
 export default function AboutUs() {
   return (
-    <section id="sobre" className="overflow-hidden bg-white py-28">
+    <section id="quem-somos" className="overflow-hidden bg-white py-28">
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           {/* Texto Quem Somos */}
@@ -33,7 +33,7 @@ export default function AboutUs() {
             <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl">
               Nossa Comunidade &
               <br />
-              <span className="text-gray-400">Propósito.</span>
+              <span className="text-[#F59827]">Propósito.</span>
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-gray-600">

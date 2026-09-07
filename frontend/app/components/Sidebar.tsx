@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  CalendarDays,
+  PersonStanding,
   Church,
   Home,
   Info,
@@ -13,9 +13,9 @@ import {
 
 const menuItems = [
   { label: "Início", href: "#inicio", icon: Home },
-  { label: "O Retiro", href: "#sobre", icon: Info },
-  { label: "Informações", href: "#informacoes", icon: Church },
-  { label: "Programação", href: "#programacao", icon: CalendarDays },
+  { label: "Propósito", href: "#sobre", icon: Church },
+  { label: "Informações", href: "#informacoes", icon: Info },
+  { label: "Quem Somos", href: "#quem-somos", icon: PersonStanding },
   { label: "Dúvidas", href: "#faq", icon: MessageCircleQuestion },
   {
     label: "Admin",

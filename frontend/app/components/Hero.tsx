@@ -1,11 +1,17 @@
-import { ArrowDown, ArrowRight, CalendarDays, MapPin } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  CalendarDays,
+  MapPin,
+  SquarePlay,
+} from "lucide-react";
 import Image from "next/image";
 
 export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-screen items-center overflow-hidden bg-[#f7f3e1] px-6 pt-24 lg:px-12"
+      className="relative flex min-h-screen items-center overflow-hidden bg-[#f7f3e1] px-6 pt-12 lg:px-12"
     >
       <div className="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-black/[0.04] blur-3xl" />
       <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-black/[0.04] blur-3xl" />
@@ -16,7 +22,7 @@ export default function Hero() {
           <h1 className="max-w-4xl text-6xl font-black leading-[0.92] tracking-[-0.05em] text-gray-950 sm:text-7xl lg:text-[6.5rem]">
             VOLTEMOS
             <br />
-            <span className="text-gray-400">RETIRO 2027</span>
+            <span className="text-[#F59827]">RETIRO 2027</span>
           </h1>
 
           <p className="mt-8 max-w-xl text-lg leading-8 text-gray-600">
@@ -41,9 +47,13 @@ export default function Hero() {
               href="https://youtu.be/aJkcXB6O_To?is=IpkoyVi-1KQHB_Sg"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-black/10 bg-white px-7 py-4 font-semibold text-gray-900 transition hover:bg-gray-50"
+              className="group inline-flex items-center gap-3 rounded-full border border-black/10 bg-white px-7 py-4 font-semibold text-gray-900 transition hover:bg-gray-50"
             >
-              Conhecer o retiro
+              <span>Conhecer o local</span>
+              <SquarePlay
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+              />
             </a>
           </div>
 

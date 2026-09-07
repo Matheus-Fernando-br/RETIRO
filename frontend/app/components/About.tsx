@@ -10,7 +10,7 @@ export default function About() {
           <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl">
             Mais do que um evento.
             <br />
-            <span className="text-gray-400">Uma experiência com Deus.</span>
+            <span className="text-[#F59827]">Uma experiência com Deus.</span>
           </h2>
         </div>
 

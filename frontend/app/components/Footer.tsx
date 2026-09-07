@@ -11,7 +11,7 @@ export default function Footer() {
         {/* Bloco do Manifesto Espiritual */}
         <div className="grid gap-12 border-b border-white/10 pb-20 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/40">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#F59827]">
               Chamado
             </p>
 
@@ -43,7 +43,7 @@ export default function Footer() {
               “Examinemos os nossos caminhos e voltemos para o Senhor.”
             </blockquote>
 
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+            <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F59827]">
               Lamentações 3:40
             </p>
           </div>
@@ -88,13 +88,6 @@ export default function Footer() {
               <p className="text-xs text-white/40">Retiro 2026 • VOLTEMOS</p>
             </div>
           </div>
-
-          <a
-            href="#inicio"
-            className="text-xs font-bold uppercase tracking-widest text-white/50 transition hover:text-white"
-          >
-            Voltar ao topo ↑
-          </a>
         </div>
 
         <div className="mt-12 border-t border-white/5 pt-6 text-center text-xs text-white/30 md:text-left">

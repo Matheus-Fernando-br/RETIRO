@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -23,13 +23,25 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ usuario, senha }),
       });
       const data = await response.json();
+
+      console.log("LOGIN DATA:", {
+        token_type: data.token_type,
+        hasAccessToken: Boolean(data.access_token),
+        response: data,
+      });
+
       if (!response.ok) {
         throw new Error(data.detail || "Usuário ou senha incorretos.");
       }
-      if (!data.authenticated) {
-        throw new Error("Não foi possível autenticar.");
+
+      if (!data.access_token) {
+        throw new Error("Token de autenticação não recebido.");
       }
+
+      sessionStorage.setItem("retiro-admin-token", data.access_token);
+
       sessionStorage.setItem("retiro-admin-auth", "true");
+
       router.push("/admin");
     } catch (error) {
       console.error(error);
@@ -109,9 +121,18 @@ export default function AdminLoginPage() {
             )}
 
             {/* Entrar */}
-            <button type="submit" className="admin-button">
-              Entrar
-              <ArrowRight size={18} className="ml-2" />
+            <button type="submit" className="admin-button" disabled={loading}>
+              {loading ? (
+                <>
+                  Entrando...
+                  <LoaderCircle size={18} className="animate-spin" />
+                </>
+              ) : (
+                <>
+                  Entrar
+                  <ArrowRight size={18} />
+                </>
+              )}
             </button>
           </form>
         </div>

@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException
-
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.inscricao import (
     InscricaoCreate,
     StatusUpdate,
 )
 from app.services.inscricao import inscricao_service
-
+from app.dependencies.admin_auth import require_admin
 
 router = APIRouter(
     prefix="/api/inscricoes",
@@ -28,7 +27,9 @@ async def create_inscricao(data: InscricaoCreate):
 
 
 @router.get("")
-async def get_inscricoes():
+async def get_inscricoes(
+    _admin: str = Depends(require_admin),
+):
     try:
         return await inscricao_service.get_all()
 
@@ -40,7 +41,10 @@ async def get_inscricoes():
 
 
 @router.get("/{inscricao_id}")
-async def get_inscricao(inscricao_id: str):
+async def get_inscricao(
+    inscricao_id: str,
+    _admin: str = Depends(require_admin),
+):
     try:
         inscricao = await inscricao_service.get_by_id(
             inscricao_id
@@ -68,6 +72,7 @@ async def get_inscricao(inscricao_id: str):
 async def update_status(
     inscricao_id: str,
     data: StatusUpdate,
+    _admin: str = Depends(require_admin)
 ):
     if data.pagamento_status not in [
         "pendente",

@@ -1,9 +1,10 @@
 import os
 
-from fastapi import APIRouter, HTTPException
 from dotenv import load_dotenv
+from fastapi import APIRouter, HTTPException
 
 from app.schemas.admin import AdminLogin
+from app.services.admin_auth import create_access_token
 
 
 load_dotenv()
@@ -35,6 +36,9 @@ async def admin_login(data: AdminLogin):
             detail="Usuário ou senha incorretos.",
         )
 
+    token = create_access_token(admin_usuario)
+
     return {
-        "authenticated": True,
+        "access_token": token,
+        "token_type": "bearer",
     }

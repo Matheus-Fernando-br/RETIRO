@@ -6,37 +6,38 @@ const questions = [
   {
     question: "Quem pode participar?",
     answer:
-      "Todos que desejarem participar do retiro e estiverem dentro das condições definidas pela organização.",
+      "O retiro é aberto a todos os membros, frequentadores da Igreja Centro Internacional de Avivamento Primavera e visitantes que desejam um tempo de renovação espiritual e comunhão. Jovens, adultos e famílias são muito bem-vindos.",
   },
   {
-    question: "O que devo levar?",
+    question: "O que devo levar para o retiro?",
     answer:
-      "Roupas confortáveis, itens de higiene pessoal, Bíblia, documento pessoal e tudo aquilo que for informado pela organização.",
+      "Recomendamos levar Bíblia, caderno para anotações, itens de higiene pessoal, toalha de banho, roupas confortáveis para as programações e momentos ao ar livre, documento oficial com foto e seus medicamentos de uso contínuo (se houver).",
   },
   {
-    question: "O valor inclui alimentação?",
+    question: "O valor da inscrição inclui alimentação e hospedagem?",
     answer:
-      "Sim. A inscrição contempla a estrutura e alimentação durante o período do retiro.",
+      "Sim! O valor do lote cobre a hospedagem completa durante todos os dias do evento, além de todas as refeições diárias (café da manhã, almoço, janta e lanche da noite). Transporte fica por conta do participante.",
   },
   {
-    question: "Como faço minha inscrição?",
+    question: "Como funciona o processo de inscrição e pagamento?",
     answer:
-      "Clique no botão de inscrição e preencha o formulário com seus dados.",
+      "O processo é feito em 3 etapas simples pelo site: 1) Preenchimento dos seus dados pessoais; 2) Informações específicas do retiro (tamanho de camisa e necessidades especiais); 3) Escolha da forma de pagamento (PIX direto via WhatsApp ou Cartão de Crédito). Sua vaga é confirmada logo após a validação do pagamento.",
   },
 ];
 
 export default function FAQ() {
   return (
-    <section id="faq" className="bg-[#f5f4ef] px-6 py-28 lg:px-12">
+    <section id="faq" className="bg-[#f5f4ef] px-6 py-15 lg:px-12">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400">
-            FAQ
-          </p>
-
           <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl">
             Ficou com alguma dúvida?
           </h2>
+
+          <p className="mt-4 text-lg leading-relaxed text-gray-600">
+            Aqui estão algumas respostas para as perguntas mais frequentes sobre
+            o retiro. Clique na pergunta para ver a resposta.
+          </p>
         </div>
 
         <div className="mt-14 space-y-3">

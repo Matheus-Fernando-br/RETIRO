@@ -29,6 +29,10 @@ type FiltroPagamento = "todos" | "pendente" | "pago" | "cancelado";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+function getAdminToken() {
+  return sessionStorage.getItem("retiro-admin-token");
+}
+
 export default function AdminPage() {
   const router = useRouter();
 
@@ -56,7 +60,13 @@ export default function AdminPage() {
       setLoading(true);
       setError("");
 
-      const response = await fetch(`${API_URL}/api/inscricoes`);
+      const token = getAdminToken();
+
+      const response = await fetch(`${API_URL}/api/inscricoes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Não foi possível carregar as inscrições.");
@@ -80,10 +90,13 @@ export default function AdminPage() {
     try {
       setUpdatingId(id);
 
+      const token = getAdminToken();
+
       const response = await fetch(`${API_URL}/api/inscricoes/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           pagamento_status: status,
@@ -113,23 +126,25 @@ export default function AdminPage() {
   }
 
   function handleLogout() {
+    sessionStorage.removeItem("retiro-admin-token");
     sessionStorage.removeItem("retiro-admin-auth");
+
     router.replace("/");
   }
 
   useEffect(() => {
     async function checkAuthentication() {
-      const authenticated =
-        sessionStorage.getItem("retiro-admin-auth") === "true";
+      const token = sessionStorage.getItem("retiro-admin-token");
 
-      if (!authenticated) {
+      console.log("TOKEN:", token);
+
+      if (!token) {
         router.replace("/admin/login");
         return;
       }
 
-      await Promise.resolve();
-
       setAuthChecking(false);
+
       await loadInscricoes();
     }
 
@@ -154,11 +169,10 @@ export default function AdminPage() {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition hover:border-gray-400 hover:text-gray-950"
+          className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-950 hover:bg-gray-950 hover:text-white active:translate-y-0"
         >
           Sair
         </button>
-
         {/* Cabeçalho */}
         <div className="mt-8 mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -184,7 +198,6 @@ export default function AdminPage() {
             Atualizar
           </button>
         </div>
-
         <div className="mb-6 flex flex-wrap gap-2">
           <button
             type="button"
@@ -234,14 +247,12 @@ export default function AdminPage() {
             Cancelados
           </button>
         </div>
-
         {/* Erro */}
         {error && (
           <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
-
         {/* Loading */}
         {loading && (
           <div className="rounded-[2rem] border border-black/5 bg-white p-10 text-center shadow-sm">
@@ -255,7 +266,6 @@ export default function AdminPage() {
             </p>
           </div>
         )}
-
         {/* Sem inscrições */}
         {!loading && inscricoesFiltradas.length === 0 && (
           <div className="rounded-[2rem] border border-black/5 bg-white p-10 text-center shadow-sm">
@@ -264,7 +274,6 @@ export default function AdminPage() {
             </p>
           </div>
         )}
-
         {/* Inscrições */}
         {!loading && inscricoesFiltradas.length > 0 && (
           <div className="space-y-4">
