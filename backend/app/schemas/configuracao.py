@@ -15,4 +15,3 @@ class ConfiguracaoRetiroResponse(BaseModel):
 
 class ConfiguracaoRetiroUpdate(BaseModel):
     lote_atual: str
-    valor_inscricao: float

@@ -2,13 +2,12 @@
 
 import {
   ArrowLeft,
-  Church,
   CreditCard,
   LoaderCircle,
   MessageCircle,
   Tag,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import RegistrationProgress from "@/app/components/RegistrationProgress";
@@ -18,7 +17,9 @@ export default function RegistrationStepThree() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [loteAtual, setLoteAtual] = useState("");
+  const [valorInscricao, setValorInscricao] = useState<number | null>(null);
+  const [loadingConfiguracao, setLoadingConfiguracao] = useState(true);
   async function finishRegistration(paymentMethod: "pix" | "cartao") {
     setLoading(true);
     setError("");
@@ -100,6 +101,65 @@ export default function RegistrationStepThree() {
     }
   }
 
+  async function loadConfiguracao() {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const response = await fetch(`${apiUrl}/api/configuracoes`);
+
+      if (!response.ok) {
+        throw new Error("Não foi possível carregar o valor da inscrição.");
+      }
+
+      const data = await response.json();
+
+      setLoteAtual(data.lote_atual);
+      setValorInscricao(Number(data.valor_inscricao));
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Erro ao carregar o valor da inscrição.",
+      );
+    } finally {
+      setLoadingConfiguracao(false);
+    }
+  }
+
+  useEffect(() => {
+    async function loadConfiguracao() {
+      try {
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+        const response = await fetch(`${apiUrl}/api/configuracoes`);
+
+        if (!response.ok) {
+          throw new Error("Não foi possível carregar o valor da inscrição.");
+        }
+
+        const data = await response.json();
+
+        setLoteAtual(data.lote_atual);
+        setValorInscricao(Number(data.valor_inscricao));
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Erro ao carregar o valor da inscrição.",
+        );
+      } finally {
+        setLoadingConfiguracao(false);
+      }
+    }
+
+    loadConfiguracao();
+  }, []);
+
   return (
     <main className="page-background">
       <div className="page-container">
@@ -149,23 +209,42 @@ export default function RegistrationStepThree() {
 
           {/* Card do Lote / Valor */}
           <div className="mb-6 flex items-center justify-between rounded-2xl border border-black/5 bg-[#f5f4ef] p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
-                <Tag size={18} />
+            {loadingConfiguracao ? (
+              <div className="text-sm text-gray-500">
+                Carregando valor da inscrição...
               </div>
+            ) : valorInscricao !== null ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
+                    <Tag size={18} />
+                  </div>
 
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
-                  Primeiro Lote
-                </p>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                      {loteAtual}
+                    </p>
+
+                    <p className="mt-1 text-sm font-medium text-gray-600">
+                      Valor da inscrição
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-xl font-black text-gray-950">
+                    {valorInscricao.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="text-sm text-red-500">
+                Não foi possível carregar o valor da inscrição.
               </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-xl font-black text-gray-950">
-                R$ 205,00
-              </span>
-            </div>
+            )}
           </div>
 
           <div className="payment-options">

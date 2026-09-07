@@ -7,8 +7,10 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-
+import { useRetiroConfig } from "@/app/components/RetiroConfig";
 export default function Info() {
+  const { configuracao, loading } = useRetiroConfig();
+
   return (
     <section id="informacoes" className="bg-[#f5f4ef] px-6 py-28 lg:px-12">
       <div className="mx-auto max-w-7xl">
@@ -58,12 +60,21 @@ export default function Info() {
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100">
               <Wallet size={21} />
             </div>
-
             <p className="mt-8 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Primeiro Lote
+              {loading
+                ? "Carregando..."
+                : configuracao?.lote_atual || "Lote atual"}
             </p>
-
-            <p className="mt-2 text-lg font-bold text-gray-950">R$ 205,00</p>
+            <p className="mt-2 text-lg font-bold text-gray-950">
+              {loading
+                ? "..."
+                : configuracao
+                  ? configuracao.valor_inscricao.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })
+                  : "Valor indisponível"}
+            </p>{" "}
           </div>
         </div>
 
@@ -124,7 +135,17 @@ export default function Info() {
             />
           </a>
           <p className="mt-3 text-xs font-semibold text-gray-400">
-            Vagas limitadas • Primeiro lote por R$ 205,00
+            {loading
+              ? "Carregando valor..."
+              : configuracao
+                ? `Vagas limitadas • ${configuracao.lote_atual} por ${configuracao.valor_inscricao.toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                    },
+                  )}`
+                : "Vagas limitadas"}
           </p>
         </div>
       </div>

@@ -50,24 +50,17 @@ async def update_configuracao(
             detail="O lote é obrigatório.",
         )
 
-    if data.valor_inscricao <= 0:
-        raise HTTPException(
-            status_code=400,
-            detail="O valor da inscrição deve ser maior que zero.",
-        )
-
     try:
         configuracao = (
             await configuracao_service.update(
                 data.lote_atual,
-                data.valor_inscricao,
             )
         )
 
         if not configuracao:
             raise HTTPException(
                 status_code=404,
-                detail="Configuração não encontrada.",
+                detail="Lote não encontrado.",
             )
 
         return configuracao

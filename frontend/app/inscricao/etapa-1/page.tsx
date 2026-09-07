@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Church } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import RegistrationProgress from "@/app/components/RegistrationProgress";
 export default function RegistrationStepOne() {
   const router = useRouter();
 
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     nome: "",
     email: "",
@@ -16,25 +17,34 @@ export default function RegistrationStepOne() {
     cpf: "",
   });
 
+  // CPF: exatamente 11 dígitos numéricos
   function formatCPF(value: string) {
-    return value
-      .replace(/\D/g, "")
-      .slice(0, 11)
+    const raw = value.replace(/\D/g, "").slice(0, 11);
+
+    return raw
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
 
+  // Telefone: de 10 a 11 dígitos numéricos (Atende fixo e celular)
   function formatPhone(value: string) {
-    return value
-      .replace(/\D/g, "")
-      .slice(0, 11)
+    const raw = value.replace(/\D/g, "").slice(0, 11);
+
+    if (raw.length <= 10) {
+      return raw
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+
+    return raw
       .replace(/^(\d{2})(\d)/, "($1) $2")
       .replace(/(\d{5})(\d)/, "$1-$2");
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
+    setError("");
 
     let formattedValue = value;
 
@@ -55,8 +65,21 @@ export default function RegistrationStepOne() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    sessionStorage.setItem("retiro-participante", JSON.stringify(form));
+    // Validação de Min/Max em dígitos limpos
+    const cpfDigits = form.cpf.replace(/\D/g, "");
+    const phoneDigits = form.telefone.replace(/\D/g, "");
 
+    if (cpfDigits.length !== 11) {
+      setError("Por favor, digite um CPF válido com 11 dígitos.");
+      return;
+    }
+
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      setError("Por favor, digite um telefone válido (DDD + número).");
+      return;
+    }
+
+    sessionStorage.setItem("retiro-participante", JSON.stringify(form));
     router.push("/inscricao/etapa-2");
   }
 
@@ -119,6 +142,8 @@ export default function RegistrationStepOne() {
                 name="nome"
                 type="text"
                 required
+                minLength={3}
+                maxLength={100}
                 value={form.nome}
                 onChange={handleChange}
                 placeholder="Digite seu nome completo"
@@ -159,10 +184,11 @@ export default function RegistrationStepOne() {
                 type="tel"
                 inputMode="tel"
                 required
+                minLength={14} // Ex: (31) 3333-3333
+                maxLength={15} // Ex: (31) 99999-9999
                 value={form.telefone}
                 onChange={handleChange}
                 placeholder="(31) 99999-9999"
-                maxLength={15}
                 className="form-input"
               />
             </div>
@@ -180,17 +206,25 @@ export default function RegistrationStepOne() {
                 type="text"
                 inputMode="numeric"
                 required
+                minLength={14} // Ex: 000.000.000-00
+                maxLength={14}
                 value={form.cpf}
                 onChange={handleChange}
                 placeholder="000.000.000-00"
-                maxLength={14}
                 className="form-input"
               />
             </div>
           </div>
 
+          {/* Mensagem de Erro de Validação */}
+          {error && (
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+
           {/* Continuar */}
-          <button type="submit" className="form-button">
+          <button type="submit" className="form-button mt-6">
             Continuar
             <ArrowRight size={18} className="form-button-icon" />
           </button>

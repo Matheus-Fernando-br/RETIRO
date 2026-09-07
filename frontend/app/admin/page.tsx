@@ -35,7 +35,14 @@ function getAdminToken() {
 
 export default function AdminPage() {
   const router = useRouter();
-
+  const [loteAtual, setLoteAtual] = useState("");
+  const [valorInscricao, setValorInscricao] = useState("");
+  const [lotes, setLotes] = useState<
+    { id: string; nome: string; valor: number }[]
+  >([]);
+  const [loadingConfiguracao, setLoadingConfiguracao] = useState(false);
+  const [salvandoConfiguracao, setSalvandoConfiguracao] = useState(false);
+  const [configuracaoMensagem, setConfiguracaoMensagem] = useState("");
   const [authChecking, setAuthChecking] = useState(true);
   const [filtroPagamento, setFiltroPagamento] =
     useState<FiltroPagamento>("todos");
@@ -54,6 +61,133 @@ export default function AdminPage() {
 
     return inscricao.pagamento_status === filtroPagamento;
   });
+
+  async function loadLotes() {
+    try {
+      const response = await fetch(`${API_URL}/api/lotes`);
+
+      if (!response.ok) {
+        throw new Error("Não foi possível carregar os lotes.");
+      }
+
+      const data = await response.json();
+
+      setLotes(data);
+    } catch (error) {
+      console.error(error);
+
+      setConfiguracaoMensagem(
+        error instanceof Error ? error.message : "Erro ao carregar os lotes.",
+      );
+    }
+  }
+
+  async function loadConfiguracao() {
+    const token = sessionStorage.getItem("retiro-admin-token");
+
+    if (!token) {
+      router.replace("/admin/login");
+      return;
+    }
+
+    setLoadingConfiguracao(true);
+    setConfiguracaoMensagem("");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const response = await fetch(`${apiUrl}/api/configuracoes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("retiro-admin-token");
+        sessionStorage.removeItem("retiro-admin-auth");
+
+        router.replace("/admin/login");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Não foi possível carregar a configuração.",
+        );
+      }
+
+      setLoteAtual(data.lote_atual);
+      setValorInscricao(String(data.valor_inscricao));
+    } catch (error) {
+      console.error(error);
+
+      setConfiguracaoMensagem(
+        error instanceof Error
+          ? error.message
+          : "Erro ao carregar configuração.",
+      );
+    } finally {
+      setLoadingConfiguracao(false);
+    }
+  }
+
+  async function updateConfiguracao() {
+    const token = sessionStorage.getItem("retiro-admin-token");
+
+    if (!token) {
+      router.replace("/admin/login");
+      return;
+    }
+
+    setSalvandoConfiguracao(true);
+    setConfiguracaoMensagem("");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const response = await fetch(`${apiUrl}/api/configuracoes`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          lote_atual: loteAtual,
+        }),
+      });
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("retiro-admin-token");
+        sessionStorage.removeItem("retiro-admin-auth");
+
+        router.replace("/admin/login");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Não foi possível salvar a configuração.",
+        );
+      }
+
+      setLoteAtual(data.lote_atual);
+      setValorInscricao(String(data.valor_inscricao));
+
+      setConfiguracaoMensagem("Configuração atualizada com sucesso.");
+    } catch (error) {
+      console.error(error);
+
+      setConfiguracaoMensagem(
+        error instanceof Error ? error.message : "Erro ao salvar configuração.",
+      );
+    } finally {
+      setSalvandoConfiguracao(false);
+    }
+  }
 
   async function loadInscricoes() {
     try {
@@ -146,6 +280,8 @@ export default function AdminPage() {
       setAuthChecking(false);
 
       await loadInscricoes();
+      await loadLotes();
+      await loadConfiguracao();
     }
 
     void checkAuthentication();
@@ -166,13 +302,55 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-[#f5f4ef] px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-7xl">
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-950 hover:bg-gray-950 hover:text-white active:translate-y-0"
-        >
-          Sair
-        </button>
+        <div className="flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-950 hover:bg-gray-950 hover:text-white active:translate-y-0"
+          >
+            Sair
+          </button>
+
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="lote-atual"
+              className="hidden text-xs font-bold uppercase tracking-[0.2em] text-gray-400 sm:block"
+            >
+              Lote atual
+            </label>
+
+            <select
+              id="lote-atual"
+              value={loteAtual}
+              disabled={
+                loadingConfiguracao ||
+                salvandoConfiguracao ||
+                lotes.length === 0
+              }
+              onChange={(event) => {
+                setLoteAtual(event.target.value);
+              }}
+              className="rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-900 outline-none transition focus:border-black disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {lotes.map((lote) => (
+                <option key={lote.id} value={lote.nome}>
+                  {lote.nome}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              onClick={updateConfiguracao}
+              disabled={
+                loadingConfiguracao || salvandoConfiguracao || !loteAtual
+              }
+              className="rounded-2xl bg-black px-4 py-3 text-sm font-bold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {salvandoConfiguracao ? "Salvando..." : "Aplicar"}
+            </button>
+          </div>
+        </div>
         {/* Cabeçalho */}
         <div className="mt-8 mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>

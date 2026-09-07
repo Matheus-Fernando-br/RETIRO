@@ -1,4 +1,5 @@
 from app.db.supabase import supabase
+from app.services.lote import lote_service
 
 
 class ConfiguracaoService:
@@ -20,8 +21,12 @@ class ConfiguracaoService:
     async def update(
         self,
         lote_atual: str,
-        valor_inscricao: float,
     ):
+        lote = await lote_service.get_by_name(lote_atual)
+
+        if not lote:
+            return None
+
         configuracao = await self.get()
 
         if not configuracao:
@@ -31,8 +36,8 @@ class ConfiguracaoService:
             supabase
             .table("configuracoes_retiro")
             .update({
-                "lote_atual": lote_atual,
-                "valor_inscricao": valor_inscricao,
+                "lote_atual": lote["nome"],
+                "valor_inscricao": lote["valor"],
                 "updated_at": "now()",
             })
             .eq("id", configuracao["id"])

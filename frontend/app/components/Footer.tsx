@@ -1,6 +1,8 @@
 import { ArrowRight, Church, Heart } from "lucide-react";
 
+import { useRetiroConfig } from "@/app/components/RetiroConfig";
 export default function Footer() {
+  const { configuracao, loading } = useRetiroConfig();
   return (
     <footer className="relative overflow-hidden bg-black px-6 pt-24 pb-12 text-white lg:px-12">
       {/* Efeitos visuais de iluminação no fundo */}
@@ -59,7 +61,20 @@ export default function Footer() {
               Pronto para viver essa experiência?
             </h3>
             <p className="mt-2 text-sm text-white/50">
-              Garanta a sua vaga no primeiro lote por apenas R$ 205,00.
+              {loading ? (
+                "Carregando valor da inscrição..."
+              ) : configuracao ? (
+                <>
+                  Garanta a sua vaga no {configuracao.lote_atual} por apenas{" "}
+                  {configuracao.valor_inscricao.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                  .
+                </>
+              ) : (
+                "Garanta sua vaga no retiro."
+              )}
             </p>
           </div>
 

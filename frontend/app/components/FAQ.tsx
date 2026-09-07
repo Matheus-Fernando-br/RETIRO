@@ -16,7 +16,7 @@ const questions = [
   {
     question: "O valor da inscrição inclui alimentação e hospedagem?",
     answer:
-      "Sim! O valor do lote cobre a hospedagem completa durante todos os dias do evento, além de todas as refeições diárias (café da manhã, almoço, janta e lanche da noite). Transporte fica por conta do participante.",
+      "Sim! O valor do lote cobre a hospedagem completa durante todos os dias do evento, além de todas as refeições diárias (café da manhã, almoço, janta e lanche da noite). Sobre o transporte teremos um ônibus saindo da igreja no dia 06 de fevereiro pela manhã e retornando no dia 08 de fevereiro pós retiro.",
   },
   {
     question: "Como funciona o processo de inscrição e pagamento?",

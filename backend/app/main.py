@@ -8,7 +8,7 @@ from app.routes.inscricoes import router as inscricoes_router
 from app.routes.configuracao import (
     router as configuracao_router,
 )
-
+from app.routes.lotes import router as lotes_router
 load_dotenv()
 
 
@@ -40,6 +40,7 @@ app.add_middleware(
 app.include_router(inscricoes_router)
 app.include_router(admin_router)
 app.include_router(configuracao_router)
+app.include_router(lotes_router)
 
 @app.get("/api/health")
 async def health_check():
