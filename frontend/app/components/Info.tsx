@@ -52,7 +52,7 @@ export default function Info() {
             </p>
 
             <p className="mt-2 text-lg font-bold text-gray-950">
-              A partir das 18h
+              A partir das 08h
             </p>
           </div>
 

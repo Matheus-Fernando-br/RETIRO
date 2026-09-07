@@ -7,69 +7,109 @@ import {
   MessageCircle,
   Tag,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import RegistrationProgress from "@/app/components/RegistrationProgress";
 
+interface Inscricao {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  cpf: string;
+  restricao_medicamentos: string;
+  membresia: string;
+  igreja: string | null;
+  camisa: string;
+  voluntariado: boolean;
+  pagamento: string | null;
+  pagamento_status: string;
+  created_at?: string;
+}
+
 export default function RegistrationStepThree() {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [inscricao, setInscricao] = useState<Inscricao | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadingPagamento, setLoadingPagamento] = useState(false);
   const [error, setError] = useState("");
+
   const [loteAtual, setLoteAtual] = useState("");
   const [valorInscricao, setValorInscricao] = useState<number | null>(null);
-  const [loadingConfiguracao, setLoadingConfiguracao] = useState(true);
-  async function finishRegistration(paymentMethod: "pix" | "cartao") {
-    setLoading(true);
+
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const inscricaoId = sessionStorage.getItem("retiro-inscricao-id");
+
+        if (!inscricaoId) {
+          throw new Error("Não encontramos os dados da sua inscrição.");
+        }
+
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+        /*
+         * BUSCA A INSCRIÇÃO
+         */
+        const response = await fetch(
+          `${apiUrl}/api/inscricoes/public/${inscricaoId}`,
+        );
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+
+          throw new Error(
+            data?.detail || "Não foi possível carregar os dados da inscrição.",
+          );
+        }
+
+        const data = await response.json();
+
+        setInscricao(data);
+
+        /*
+         * BUSCA CONFIGURAÇÃO DO LOTE / VALOR
+         */
+        const configuracaoResponse = await fetch(`${apiUrl}/api/configuracoes`);
+
+        if (!configuracaoResponse.ok) {
+          throw new Error("Não foi possível carregar o valor da inscrição.");
+        }
+
+        const configuracao = await configuracaoResponse.json();
+
+        setLoteAtual(configuracao.lote_atual);
+        setValorInscricao(Number(configuracao.valor_inscricao));
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Ocorreu um erro ao carregar sua inscrição.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarDados();
+  }, []);
+
+  async function continuarPagamento(paymentMethod: "pix" | "cartao") {
+    setLoadingPagamento(true);
     setError("");
 
     try {
-      const storedRegistration = sessionStorage.getItem("retiro-inscricao");
-
-      if (!storedRegistration) {
+      if (!inscricao) {
         throw new Error("Dados da inscrição não encontrados.");
       }
-
-      const registration = JSON.parse(storedRegistration);
-
-      const payload = {
-        nome: registration.nome,
-        email: registration.email,
-        telefone: registration.telefone,
-        cpf: registration.cpf,
-
-        restricao_medicamentos: registration.restricaoMedicamentos,
-
-        membresia: registration.membresia,
-        igreja: registration.igreja || null,
-        camisa: registration.camisa,
-        voluntariado: registration.voluntariado,
-
-        pagamento: paymentMethod,
-      };
-
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-      const response = await fetch(`${apiUrl}/api/inscricoes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-
-        throw new Error(
-          data.detail || "Não foi possível realizar sua inscrição.",
-        );
-      }
-
-      const savedRegistration = await response.json();
-
-      sessionStorage.setItem("retiro-inscricao-id", savedRegistration.id);
 
       sessionStorage.setItem("retiro-pagamento", paymentMethod);
 
@@ -94,71 +134,25 @@ export default function RegistrationStepThree() {
       setError(
         error instanceof Error
           ? error.message
-          : "Ocorreu um erro ao realizar sua inscrição.",
+          : "Ocorreu um erro ao continuar.",
       );
     } finally {
-      setLoading(false);
+      setLoadingPagamento(false);
     }
   }
 
-  async function loadConfiguracao() {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-      const response = await fetch(`${apiUrl}/api/configuracoes`);
-
-      if (!response.ok) {
-        throw new Error("Não foi possível carregar o valor da inscrição.");
-      }
-
-      const data = await response.json();
-
-      setLoteAtual(data.lote_atual);
-      setValorInscricao(Number(data.valor_inscricao));
-    } catch (error) {
-      console.error(error);
-
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao carregar o valor da inscrição.",
-      );
-    } finally {
-      setLoadingConfiguracao(false);
-    }
+  if (loading) {
+    return (
+      <main className="page-background">
+        <div className="page-container flex min-h-[60vh] items-center justify-center">
+          <div className="flex items-center gap-3 text-gray-500">
+            <LoaderCircle size={22} className="animate-spin" />
+            Carregando sua inscrição...
+          </div>
+        </div>
+      </main>
+    );
   }
-
-  useEffect(() => {
-    async function loadConfiguracao() {
-      try {
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-        const response = await fetch(`${apiUrl}/api/configuracoes`);
-
-        if (!response.ok) {
-          throw new Error("Não foi possível carregar o valor da inscrição.");
-        }
-
-        const data = await response.json();
-
-        setLoteAtual(data.lote_atual);
-        setValorInscricao(Number(data.valor_inscricao));
-      } catch (error) {
-        console.error(error);
-
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Erro ao carregar o valor da inscrição.",
-        );
-      } finally {
-        setLoadingConfiguracao(false);
-      }
-    }
-
-    loadConfiguracao();
-  }, []);
 
   return (
     <main className="page-background">
@@ -169,7 +163,7 @@ export default function RegistrationStepThree() {
             type="button"
             onClick={() => router.back()}
             className="registration-back"
-            disabled={loading}
+            disabled={loadingPagamento}
           >
             <ArrowLeft size={17} />
             Voltar
@@ -188,33 +182,127 @@ export default function RegistrationStepThree() {
         <div className="mb-8">
           <p className="registration-eyebrow">Inscrição</p>
 
-          <h1 className="registration-title">Última etapa.</h1>
+          <h1 className="registration-title">Confira seus dados.</h1>
 
           <p className="registration-description">
-            Escolha a forma de pagamento para concluir sua inscrição no Retiro
-            2026.
+            Verifique se todas as informações estão corretas antes de escolher a
+            forma de pagamento.
           </p>
         </div>
 
-        {/* Progresso */}
         <RegistrationProgress currentStep={3} />
 
-        {/* Pagamento */}
-        <div className="form-card">
-          <div className="form-header">
-            <p className="form-section-label">Pagamento</p>
-
-            <h2 className="form-section-title">Como você deseja pagar?</h2>
+        {error && (
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">
+            {error}
           </div>
+        )}
 
-          {/* Card do Lote / Valor */}
-          <div className="mb-6 flex items-center justify-between rounded-2xl border border-black/5 bg-[#f5f4ef] p-5">
-            {loadingConfiguracao ? (
-              <div className="text-sm text-gray-500">
-                Carregando valor da inscrição...
+        {inscricao && (
+          <>
+            {/* DADOS DA INSCRIÇÃO */}
+            <div className="form-card mb-6">
+              <div className="form-header">
+                <p className="form-section-label">Seus dados</p>
+
+                <h2 className="form-section-title">Dados da inscrição</h2>
               </div>
-            ) : valorInscricao !== null ? (
-              <>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Nome
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.nome}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    E-mail
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.email}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Telefone
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.telefone}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    CPF
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.cpf}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Membresia
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.membresia}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Igreja
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.igreja || "Não informado"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Camisa
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.camisa}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Voluntariado
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.voluntariado ? "Sim" : "Não"}
+                  </p>
+                </div>
+
+                <div className="md:col-span-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    Restrição a medicamentos
+                  </p>
+
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {inscricao.restricao_medicamentos || "Nenhuma"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* PAGAMENTO */}
+            <div className="form-card">
+              <div className="form-header">
+                <p className="form-section-label">Pagamento</p>
+
+                <h2 className="form-section-title">Como você deseja pagar?</h2>
+              </div>
+
+              {/* LOTE */}
+              <div className="mb-6 flex items-center justify-between rounded-2xl border border-black/5 bg-[#f5f4ef] p-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
                     <Tag size={18} />
@@ -233,86 +321,79 @@ export default function RegistrationStepThree() {
 
                 <div className="text-right">
                   <span className="text-xl font-black text-gray-950">
-                    {valorInscricao.toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
+                    {valorInscricao !== null
+                      ? valorInscricao.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })
+                      : "--"}
                   </span>
                 </div>
-              </>
-            ) : (
-              <div className="text-sm text-red-500">
-                Não foi possível carregar o valor da inscrição.
-              </div>
-            )}
-          </div>
-
-          <div className="payment-options">
-            {/* PIX */}
-            <button
-              type="button"
-              onClick={() => finishRegistration("pix")}
-              disabled={loading}
-              className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <div className="payment-option-content">
-                <div className="payment-option-icon">
-                  {loading ? (
-                    <LoaderCircle size={22} className="animate-spin" />
-                  ) : (
-                    <MessageCircle size={22} />
-                  )}
-                </div>
-
-                <div>
-                  <p className="payment-option-title">PIX</p>
-
-                  <p className="payment-option-description">
-                    Fale com a organização pelo WhatsApp para realizar o
-                    pagamento.
-                  </p>
-                </div>
               </div>
 
-              <span className="text-xl text-gray-400">→</span>
-            </button>
+              {/* FORMAS DE PAGAMENTO */}
+              <div className="payment-options">
+                {/* PIX */}
+                <button
+                  type="button"
+                  onClick={() => continuarPagamento("pix")}
+                  disabled={loadingPagamento}
+                  className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <div className="payment-option-content">
+                    <div className="payment-option-icon">
+                      {loadingPagamento ? (
+                        <LoaderCircle size={22} className="animate-spin" />
+                      ) : (
+                        <MessageCircle size={22} />
+                      )}
+                    </div>
 
-            {/* Cartão */}
-            <button
-              type="button"
-              onClick={() => finishRegistration("cartao")}
-              disabled={loading}
-              className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <div className="payment-option-content">
-                <div className="payment-option-icon">
-                  {loading ? (
-                    <LoaderCircle size={22} className="animate-spin" />
-                  ) : (
-                    <CreditCard size={22} />
-                  )}
-                </div>
+                    <div>
+                      <p className="payment-option-title">PIX</p>
 
-                <div>
-                  <p className="payment-option-title">Cartão</p>
+                      <p className="payment-option-description">
+                        Fale com a organização pelo WhatsApp para realizar o
+                        pagamento.
+                      </p>
+                    </div>
+                  </div>
 
-                  <p className="payment-option-description">
-                    Acesse o link externo para realizar o pagamento com cartão.
-                  </p>
-                </div>
+                  <span className="text-xl text-gray-400">→</span>
+                </button>
+
+                {/* CARTÃO */}
+                <button
+                  type="button"
+                  onClick={() => continuarPagamento("cartao")}
+                  disabled={loadingPagamento}
+                  className="payment-option disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <div className="payment-option-content">
+                    <div className="payment-option-icon">
+                      {loadingPagamento ? (
+                        <LoaderCircle size={22} className="animate-spin" />
+                      ) : (
+                        <CreditCard size={22} />
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="payment-option-title">Cartão</p>
+
+                      <p className="payment-option-description">
+                        Acesse o link externo para realizar o pagamento com
+                        cartão.
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="text-xl text-gray-400">→</span>
+                </button>
               </div>
-
-              <span className="text-xl text-gray-400">→</span>
-            </button>
-          </div>
-
-          {/* Erro */}
-          {error && (
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">
-              {error}
             </div>
-          )}
-        </div>
+          </>
+        )}
 
         <p className="form-footer-text">
           Seus dados serão enviados com segurança para concluir sua inscrição.

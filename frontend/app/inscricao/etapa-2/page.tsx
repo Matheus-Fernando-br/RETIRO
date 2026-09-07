@@ -18,21 +18,67 @@ export default function RegistrationStepTwo() {
     voluntariado: false,
   });
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const participant = JSON.parse(
-      sessionStorage.getItem("retiro-participante") || "{}",
-    );
+    try {
+      const participant = JSON.parse(
+        sessionStorage.getItem("retiro-participante") || "{}",
+      );
 
-    const registration = {
-      ...participant,
-      ...form,
-    };
+      if (!participant.nome || !participant.email) {
+        throw new Error("Os dados da primeira etapa não foram encontrados.");
+      }
 
-    sessionStorage.setItem("retiro-inscricao", JSON.stringify(registration));
+      const registration = {
+        nome: participant.nome,
+        email: participant.email,
+        telefone: participant.telefone,
+        cpf: participant.cpf,
 
-    router.push("/inscricao/etapa-3");
+        restricao_medicamentos: form.restricaoMedicamentos,
+        membresia: form.membresia,
+        igreja: form.igreja || null,
+        camisa: form.camisa,
+        voluntariado: form.voluntariado,
+
+        pagamento: null,
+      };
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const response = await fetch(`${apiUrl}/api/inscricoes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registration),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.detail || "Não foi possível realizar sua inscrição.",
+        );
+      }
+
+      // Guarda o ID criado pelo backend
+      sessionStorage.setItem("retiro-inscricao-id", data.id);
+
+      // Mantém os dados no navegador, caso sejam necessários
+      sessionStorage.setItem("retiro-inscricao", JSON.stringify(data));
+
+      router.push("/inscricao/etapa-3");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro ao realizar sua inscrição.",
+      );
+    }
   }
 
   return (

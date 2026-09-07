@@ -8,9 +8,9 @@ export default function About() {
           </p>
 
           <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-950 sm:text-5xl">
-            Mais do que um evento.
+            É chegado um novo tempo
             <br />
-            <span className="text-[#F59827]">Uma experiência com Deus.</span>
+            <span className="text-[#F59827]">E um tempo em Comunidade.</span>
           </h2>
         </div>
 

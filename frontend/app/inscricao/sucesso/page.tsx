@@ -22,7 +22,8 @@ export default function RegistrationSuccess() {
             <h1 className="registration-title">Tudo certo!</h1>
 
             <p className="registration-description mx-auto">
-              Sua inscrição no Retiro 2026 foi registrada com sucesso.
+              Sua solicitação de inscrição para o Retiro 2026 foi registrada com
+              sucesso.
             </p>
 
             {/* Informação */}
@@ -34,7 +35,7 @@ export default function RegistrationSuccess() {
                   <p className="mt-2 text-sm leading-6 text-gray-500">
                     Agora é só realizar o pagamento conforme a opção escolhida.
                     A organização irá confirmar sua inscrição após a
-                    identificação do pagamento.
+                    identificação do pagamento e te notificar via e-mail.
                   </p>
                 </div>
               </div>
