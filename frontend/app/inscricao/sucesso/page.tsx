@@ -17,13 +17,15 @@ export default function RegistrationSuccess() {
             </div>
 
             {/* Texto */}
-            <p className="registration-eyebrow mt-8">Inscrição realizada</p>
+            <p className="registration-eyebrow mt-8">
+              Solicitação de Inscrição realizada
+            </p>
 
-            <h1 className="registration-title">Tudo certo!</h1>
+            <h1 className="registration-title">Quase lá!</h1>
 
             <p className="registration-description mx-auto">
               Sua solicitação de inscrição para o Retiro 2026 foi registrada com
-              sucesso.
+              sucesso!
             </p>
 
             {/* Informação */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import RegistrationProgress from "@/app/components/RegistrationProgress";
 
 export default function RegistrationStepOne() {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     nome: "",
@@ -64,23 +64,26 @@ export default function RegistrationStepOne() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    setLoading(true);
     // Validação de Min/Max em dígitos limpos
     const cpfDigits = form.cpf.replace(/\D/g, "");
     const phoneDigits = form.telefone.replace(/\D/g, "");
 
     if (cpfDigits.length !== 11) {
       setError("Por favor, digite um CPF válido com 11 dígitos.");
+      setLoading(false);
       return;
     }
 
     if (phoneDigits.length < 10 || phoneDigits.length > 11) {
       setError("Por favor, digite um telefone válido (DDD + número).");
+      setLoading(false);
       return;
     }
 
     sessionStorage.setItem("retiro-participante", JSON.stringify(form));
     router.push("/inscricao/etapa-2");
+    setLoading(false);
   }
 
   return (
@@ -224,9 +227,17 @@ export default function RegistrationStepOne() {
           )}
 
           {/* Continuar */}
-          <button type="submit" className="form-button mt-6">
-            Continuar
-            <ArrowRight size={18} className="form-button-icon" />
+          <button type="submit" className="form-button mt-6" disabled={loading}>
+            {loading ? (
+              <>
+                <LoaderCircle size={18} className="animate-spin" />
+              </>
+            ) : (
+              <>
+                Continuar
+                <ArrowRight size={18} className="form-button-icon" />
+              </>
+            )}
           </button>
         </form>
 

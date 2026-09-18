@@ -115,7 +115,7 @@ export default function RegistrationStepThree() {
 
       if (paymentMethod === "pix") {
         window.open(
-          "https://wa.me/553173139892?text=Ol%C3%A1%20Gilson%2C%20fiz%20minha%20inscri%C3%A7%C3%A3o%20no%20site%20e%20gostaria%20de%20pagar%20pelo%20pix%20o%20retiro%21",
+          "https://wa.me/553172002576?text=Ol%C3%A1%21%20Tudo%20bem%3F%20Estou%20finalizando%20minha%20inscri%C3%A7%C3%A3o%20do%20retiro%20e%20decidi%20pagar%20via%20pix%2C%20queria%20saber%20das%20op%C3%A7%C3%B5es%20%F0%9F%98%83",
           "_blank",
         );
       }

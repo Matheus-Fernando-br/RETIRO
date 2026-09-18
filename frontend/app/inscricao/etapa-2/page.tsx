@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Church } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Church,
+  LoaderCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -9,7 +15,7 @@ import RegistrationProgress from "@/app/components/RegistrationProgress";
 
 export default function RegistrationStepTwo() {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     restricaoMedicamentos: "",
     membresia: "",
@@ -20,7 +26,7 @@ export default function RegistrationStepTwo() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const participant = JSON.parse(
         sessionStorage.getItem("retiro-participante") || "{}",
@@ -78,6 +84,8 @@ export default function RegistrationStepTwo() {
           ? error.message
           : "Ocorreu um erro ao realizar sua inscrição.",
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -306,9 +314,17 @@ export default function RegistrationStepTwo() {
           </div>
 
           {/* Continuar */}
-          <button type="submit" className="form-button">
-            Continuar
-            <ArrowRight size={18} className="form-button-icon" />
+          <button type="submit" className="form-button" disabled={loading}>
+            {loading ? (
+              <>
+                <LoaderCircle size={18} className="animate-spin" />
+              </>
+            ) : (
+              <>
+                Continuar
+                <ArrowRight size={18} className="form-button-icon" />
+              </>
+            )}
           </button>
         </form>
 
